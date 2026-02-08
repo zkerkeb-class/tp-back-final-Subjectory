@@ -76,7 +76,7 @@ app.get('/pokemons/name/:name', async (req, res) => {
   }
 });
 
-// DELETE un pokémon par son id
+// DELETE un pokémon par son id (sert pour la page pokemonDetails)
 app.delete('/pokemons/:id', async (req, res) => {
   try {
     const result = await pokemon.deleteOne({ id: req.params.id });
