@@ -12,31 +12,18 @@ app.get('/', (req, res) => {
   res.send('Hello, World!');
 });
 
-// // GET tous les pokémons
-// app.get('/pokemons', async (req, res) => {
-//   try {
-//     const pokemons = await pokemon.find({});
-//     res.json(pokemons);
-//   } catch (error) {
-//     res.status(500).json({ error: 'Failed to fetch pokemons' });
-//   }
-// });
-
 // GET les pokémons avec pagination (dynamique)
 app.get('/pokemons', async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const search = req.query.search || '';
     
-    // CORRECTION ICI : On accepte la limite envoyée par le client, sinon 20 par défaut
+    // Par défaut 20, sinon pas de limite pour un affichage par type de pokémon
     const limit = parseInt(req.query.limit) || 20; 
     
     const skip = (page - 1) * limit;
-
-    // Construction du filtre MongoDB
     let query = {};
     
-    // Si on a une recherche textuelle
     if (search) {
       query = {
         $or: [
@@ -44,11 +31,6 @@ app.get('/pokemons', async (req, res) => {
           { 'type': { $regex: search, $options: 'i' } }
         ]
       };
-    }
-    
-    // OPTIONNEL : Si tu veux gérer le filtre par type côté serveur plus tard
-    if (req.query.type && req.query.type !== 'All') {
-        query.type = req.query.type;
     }
 
     const totalPokemons = await pokemon.countDocuments(query);
@@ -63,7 +45,7 @@ app.get('/pokemons', async (req, res) => {
       currentPage: page
     });
   } catch (error) {
-    console.error(error); // Ajout d'un log pour voir l'erreur serveur si besoin
+    console.error(error);
     res.status(500).json({ error: 'Failed to fetch pokemons' });
   }
 });
@@ -146,11 +128,11 @@ app.post('/pokemons', async (req, res) => {
     const newPokemon = new pokemon(newPokemonData);
     await newPokemon.save();
     
-    console.log("✅ Pokémon créé :", frenchName);
+    console.log("Pokémon créé :", frenchName);
     res.status(201).json(newPokemon);
 
   } catch (error) {
-    console.error("❌ Erreur création :", error.message);
+    console.error("Erreur création :", error.message);
     res.status(500).json({ error: error.message });
   }
 });
