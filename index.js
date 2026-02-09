@@ -8,10 +8,6 @@ app.use(express.json());
 // Permet d'accéder aux images des pokémons dans le dossier assets
 app.use('/assets', express.static('assets'));
 
-app.get('/', (req, res) => {
-  res.send('Hello, World!');
-});
-
 // GET les pokémons avec pagination (dynamique)
 app.get('/pokemons', async (req, res) => {
   try {
@@ -117,6 +113,7 @@ app.post('/pokemons', async (req, res) => {
         Speed: sentBase.Speed || 50
       },
 
+      // Image par défaut si aucune n'est envoyée
       image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/0.png"
     };
 
